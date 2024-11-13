@@ -8,11 +8,14 @@
 <body>
     <h1>This is about page</h1>
     <hr>
-    <div th:insert="~{base:: header(~{::section})}">
-        <section>
+    <div th:insert="${isLogin} ? ~{base:: header(~{::#logged-in})} : ~{base:: test(~{::#not-logged-in})}">
+        <section id="logged-in">
             <h1>Dynamic Content</h1>
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi placeat quae id accusantium deleniti voluptates saepe ipsam voluptatibus consequuntur blanditiis!</p>
             <button>Click Me</button>
+        </section>
+        <section id="not-logged-in">
+            <h1>User not logged in</h1>
         </section>
     </div>
 </body>

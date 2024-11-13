@@ -4,3 +4,7 @@
     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga, quos.</p>
     <div th:replace="${content}"></div>
 </div>
+
+<div th:fragment="test(content)">
+    <h1 th:replace="${content}"></h1>
+</div>
