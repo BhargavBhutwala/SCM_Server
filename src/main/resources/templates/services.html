@@ -8,6 +8,11 @@
 <body>
     <h1>This is services page</h1>
     <hr>
-    <div th:replace="~{base:: header('service one','service two')}"></div>
+    <div th:replace="~{base:: header(~{::section})}">
+        <section>
+            <h1>Dynamic service content</h1>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi voluptates aspernatur natus ea amet! Perspiciatis, quasi eius! Exercitationem, doloremque perspiciatis.</p>
+        </section>
+    </div>
 </body>
 </html>

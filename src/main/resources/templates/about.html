@@ -8,6 +8,12 @@
 <body>
     <h1>This is about page</h1>
     <hr>
-    <div th:insert="~{base:: header('one','two')}"></div>
+    <div th:insert="~{base:: header(~{::section})}">
+        <section>
+            <h1>Dynamic Content</h1>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi placeat quae id accusantium deleniti voluptates saepe ipsam voluptatibus consequuntur blanditiis!</p>
+            <button>Click Me</button>
+        </section>
+    </div>
 </body>
 </html>

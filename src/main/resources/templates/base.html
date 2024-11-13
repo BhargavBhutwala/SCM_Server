@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<div class="frag-class" th:fragment="header(x,y)">
+<div class="frag-class" th:fragment="header(content)">
     <h1>This is header fragment</h1>
     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga, quos.</p>
-    <h3>The value of x is <span th:text = "${x}"></span></h3>
+    <div th:replace="${content}"></div>
 </div>
