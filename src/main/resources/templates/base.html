@@ -1,10 +1,22 @@
 <!DOCTYPE html>
-<div class="frag-class" th:fragment="header(content)">
-    <h1>This is header fragment</h1>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga, quos.</p>
-    <div th:replace="${content}"></div>
-</div>
+<html lang="en" th:fragment="parent(content,title,script)" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:replace="${title}">SCM</title>
+    <link rel="stylesheet" data-th-href="@{'/css/output.css'}">
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" />
+</head>
+<body>
 
-<div th:fragment="test(content)">
-    <h1 th:replace="${content}"></h1>
-</div>
+    <!-- common header -->
+
+    <!-- Page Content -->
+    <section th:replace="${content}"></section>
+
+    <!-- common footer -->
+
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+    <th:block th:replace="${script}"></th:block>
+</body>
+</html>

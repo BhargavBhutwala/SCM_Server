@@ -1,22 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" th:replace="~{base:: parent(~{::#content}, ~{::title}, ~{::script})}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>About</title>
 </head>
 <body>
-    <h1>This is about page</h1>
-    <hr>
-    <div th:insert="${isLogin} ? ~{base:: header(~{::#logged-in})} : ~{base:: test(~{::#not-logged-in})}">
-        <section id="logged-in">
-            <h1>Dynamic Content</h1>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi placeat quae id accusantium deleniti voluptates saepe ipsam voluptatibus consequuntur blanditiis!</p>
-            <button>Click Me</button>
-        </section>
-        <section id="not-logged-in">
-            <h1>User not logged in</h1>
-        </section>
+    <div id="content">
+        <h1>This is about page</h1>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat recusandae eum quas unde, ullam atque eligendi dicta? Atque, excepturi molestias?</p>
+
     </div>
+    <script>
+        console.log("Script from about");
+    </script>
 </body>
 </html>

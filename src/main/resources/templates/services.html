@@ -1,18 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" th:replace="~{base:: parent(~{::#content}, ~{::title}, ~{})}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Services</title>
 </head>
 <body>
-    <h1>This is services page</h1>
-    <hr>
-    <div th:replace="~{base:: header(~{::section})}">
-        <section>
-            <h1>Dynamic service content</h1>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi voluptates aspernatur natus ea amet! Perspiciatis, quasi eius! Exercitationem, doloremque perspiciatis.</p>
-        </section>
+    <div id="content">
+        <h1>This is services page</h1>
+        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Non accusamus magni dolor nihil officia. Velit incidunt perferendis illum quos cupiditate!</p>
+
     </div>
 </body>
 </html>
