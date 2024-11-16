@@ -1,5 +1,7 @@
 console.log('script loaded');
 
+let changeThemeButton = document.querySelector('#theme_change_btn');
+
 let currentTheme = getTheme();
 
 document.addEventListener('DOMContentLoaded', (event) => {
@@ -10,8 +12,6 @@ function changeTheme() {
   console.log(currentTheme);
   // set theme to web page
   document.querySelector('html').classList.add(currentTheme);
-
-  let changeThemeButton = document.querySelector('#theme_change_btn');
 
   changeThemeButton.addEventListener('click', (event) => {
     //console.log('theme changed');
@@ -37,8 +37,14 @@ function getTheme() {
   let theme = localStorage.getItem('theme');
 
   if (theme) {
+    if (theme == 'light') {
+      changeThemeButton.querySelector('span').textContent = 'Dark';
+    } else {
+      changeThemeButton.querySelector('span').textContent = 'Light';
+    }
     return theme;
   } else {
+    changeThemeButton.querySelector('span').textContent = 'Dark';
     return 'light';
   }
 }
