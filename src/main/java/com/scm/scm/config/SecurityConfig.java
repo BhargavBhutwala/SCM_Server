@@ -1,24 +1,53 @@
 package com.scm.scm.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.scm.scm.services.Impl.SecurityCustomUserDetailService;
 
 @Configuration
 public class SecurityConfig {
 
    // create user and then login using java code with in memory service
+
+   // @Bean
+   // public UserDetailsService userDetailsService() {
+
+   // create user
+   // UserDetails user =
+   // User.withDefaultPasswordEncoder().username("admin").password("password").build();
+
+   // InMemoryUserDetailsManager detailsManager = new InMemoryUserDetailsManager();
+   // detailsManager.createUser(User.withDefaultPasswordEncoder().username("admin").password("password").build());
+   // return detailsManager;
+   // }
+
+   // or you can use database for user management
+
+   @Autowired
+   private SecurityCustomUserDetailService userDetailsService;
+
    @Bean
-   public UserDetailsService userDetailsService() {
+   public AuthenticationProvider authenticationProvider() {
 
-      // create user
-      // UserDetails user =
-      // User.withDefaultPasswordEncoder().username("admin").password("password").build();
+      DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
 
-      InMemoryUserDetailsManager detailsManager = new InMemoryUserDetailsManager();
-      detailsManager.createUser(User.withDefaultPasswordEncoder().username("admin").password("password").build());
-      return detailsManager;
+      // set user details service
+      authenticationProvider.setUserDetailsService(this.userDetailsService);
+
+      // set password encoder
+      authenticationProvider.setPasswordEncoder(passwordEncoder());
+
+      return authenticationProvider;
+   }
+
+   @Bean
+   public PasswordEncoder passwordEncoder() {
+      return new BCryptPasswordEncoder();
    }
 }
