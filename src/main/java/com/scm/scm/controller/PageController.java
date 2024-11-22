@@ -9,7 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.scm.scm.entities.User;
 import com.scm.scm.forms.UserForm;
+import com.scm.scm.helper.Message;
+import com.scm.scm.helper.MessageType;
 import com.scm.scm.services.UserService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class PageController {
@@ -55,7 +59,7 @@ public class PageController {
 
     // processing registration
     @PostMapping("/do-register")
-    public String processRegistration(@ModelAttribute UserForm userForm) {
+    public String processRegistration(@ModelAttribute UserForm userForm, HttpSession session) {
         // fetch form data
         // UserForm
         System.out.println(userForm);
@@ -64,21 +68,29 @@ public class PageController {
 
         // save user data to database [user service]
         // userForm --> user
-        User user = User.builder()
-                .name(userForm.getName())
-                .email(userForm.getEmail())
-                .password(userForm.getPassword())
-                .phoneNumber(userForm.getPhoneNumber())
-                .about(userForm.getAbout())
-                .profilePic(
-                        "https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-media-1677509740")
-                .build();
+
+        User user = new User();
+        user.setName(userForm.getName());
+        user.setEmail(userForm.getEmail());
+        user.setPassword(userForm.getPassword());
+        user.setPhoneNumber(userForm.getPhoneNumber());
+        user.setAbout(userForm.getAbout());
+        user.setProfilePic(
+                "https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-media-1677509740");
+
+        // save user to database
         userService.saveUser(user);
 
         // message "Registration successful"
         System.out.println("user saved successfully");
 
+        Message message = new Message();
+        message.setContent("Registration successful!");
+        message.setType(MessageType.green);
+
+        session.setAttribute("alert", message);
+
         // redirect to login page
-        return "redirect:/login";
+        return "redirect:/signup";
     }
 }
