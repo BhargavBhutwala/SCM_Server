@@ -34,6 +34,9 @@ public class SecurityConfig {
    @Autowired
    private SecurityCustomUserDetailService userDetailsService;
 
+   @Autowired
+   private OAuthSuccessHandler handler;
+
    @Bean
    public AuthenticationProvider authenticationProvider() {
 
@@ -70,6 +73,12 @@ public class SecurityConfig {
                formLogin.usernameParameter("email");
                formLogin.passwordParameter("password");
             });
+
+      // oauth configuration
+      httpSecurity.oauth2Login(auth -> {
+         auth.loginPage("/login");
+         auth.successHandler(handler);
+      });
 
       return httpSecurity.build();
    }

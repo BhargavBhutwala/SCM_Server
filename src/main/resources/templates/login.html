@@ -44,10 +44,21 @@
                   <!-- <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-red-600 py-2 px-1">Password is required</p> -->
                </div>
                <!-- submit button -->
-               <div class="mb-2 text-center">
+               <div class="mb-2 text-center mt-6">
                   <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Login</button>
                </div>
             </form>
+            <p class="text-center mt-6 justify-center">Or</p>
+            <div class="social-buttons-container text-center mt-5">
+               <a th:href="@{'/oauth2/authorization/google'}" class="login-with-google-btn">Login with Google</a>
+            </div>
+            <!-- link to register page -->
+            <div class="text-center mt-9">
+               <a th:href="@{/signup}" class="text-blue-600 hover:text-blue-800 dark:text-white">Don't have an account? Sign up</a>
+            </div>
+            <!-- link to forgot password page -->
+            <div class="text-center mt-4">
+               <a th:href="@{/forgot-password}" class="text-blue-600 hover:text-blue-800 dark:text-white">Forgot Password?</a>
             </div>
          </div>
       </div>
