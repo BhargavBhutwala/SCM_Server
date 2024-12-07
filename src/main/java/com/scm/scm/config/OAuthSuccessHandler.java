@@ -4,10 +4,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -25,7 +28,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
 
-   // Logger logger = LoggerFactory.getLogger(OAuthSuccessHandler.class);
+   Logger logger = LoggerFactory.getLogger(OAuthSuccessHandler.class);
 
    @Autowired
    private UserRepository userRepository;
@@ -39,40 +42,64 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
          Authentication authentication) throws IOException, ServletException {
 
-      // get user data from request and store it in database before redirecting
+      // identify provider
 
-      DefaultOAuth2User user = (DefaultOAuth2User) authentication.getPrincipal();
+      OAuth2AuthenticationToken oauth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
 
-      // logger.info(user.getName());
+      String authorizedClientRegistrationId = oauth2AuthenticationToken.getAuthorizedClientRegistrationId();
 
-      // user.getAttributes().forEach((key, value) -> {
-      // logger.info("{}: {}", key, value);
+      // System.out.println(authorizedClientRegistrationId);
+
+      DefaultOAuth2User oauth2User = (DefaultOAuth2User) authentication.getPrincipal();
+
+      // oauth2User.getAttributes().forEach((key, value) -> {
+      // logger.info("{} -> {}", key, value);
       // });
 
-      String email = user.getAttribute("email").toString();
-      String name = user.getAttribute("name").toString();
-      String profilePic = user.getAttribute("picture").toString();
+      User user = new User();
+      user.setUserId(UUID.randomUUID().toString());
+      user.setPassword(passwordEncoder.encode("password"));
+      user.setEnabled(true);
+      user.setEmailVerified(true);
+      user.setRoleList(List.of(AppConstants.ROLE_USER));
+
+      if (authorizedClientRegistrationId.equalsIgnoreCase("google")) {
+         // google login
+         user.setEmail(oauth2User.getAttribute("email").toString());
+         user.setName(oauth2User.getAttribute("name").toString());
+         user.setProfilePic(oauth2User.getAttribute("picture").toString());
+         user.setProvider(Providers.GOOGLE);
+         user.setProviderId(oauth2User.getName());
+
+      } else if (authorizedClientRegistrationId.equalsIgnoreCase("github")) {
+         // github login
+         String name = oauth2User.getAttribute("name").toString() != null ? oauth2User.getAttribute("name").toString()
+               : oauth2User.getAttribute("login").toString();
+
+         String email = oauth2User.getAttribute("email").toString() != null
+               ? oauth2User.getAttribute("email").toString()
+               : oauth2User.getAttribute("login").toString() + "@gmail.com";
+
+         String profilePic = oauth2User.getAttribute("avatar_url").toString();
+
+         user.setEmail(email);
+         user.setName(name);
+         user.setProfilePic(profilePic);
+         user.setProvider(Providers.GITHUB);
+         user.setProviderId(oauth2User.getName());
+
+      } else {
+         logger.info("Unknown provider");
+      }
 
       // save user data to database
 
-      User user2 = new User();
-      user2.setUserId(UUID.randomUUID().toString());
-      user2.setName(name);
-      user2.setEmail(email);
-      user2.setProfilePic(profilePic);
-      user2.setPassword(passwordEncoder.encode("password"));
-      user2.setProvider(Providers.GOOGLE);
-      user2.setEnabled(true);
-      user2.setEmailVerified(true);
-      user2.setProviderId(user.getName());
-      user2.setRoleList(List.of(AppConstants.ROLE_USER));
-
       // check if user is already present in database
       // if not, save the user
-      User user3 = userRepository.findByEmail(email).orElse(null);
+      User user3 = userRepository.findByEmail(user.getEmail()).orElse(null);
 
       if (user3 == null) {
-         userRepository.save(user2);
+         userRepository.save(user);
       }
 
       new DefaultRedirectStrategy().sendRedirect(request, response, "/user/dashboard");
