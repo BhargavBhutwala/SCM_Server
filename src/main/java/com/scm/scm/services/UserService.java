@@ -20,4 +20,6 @@ public interface UserService {
    public boolean isUserExistByEmail(String email);
 
    public List<User> getAllUsers();
+
+   public User getUserByEmail(String email);
 }
