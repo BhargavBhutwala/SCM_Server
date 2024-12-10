@@ -14,9 +14,16 @@
 <body class="dark:bg-slate-800 dark:text-white bg-slate-50 flex items-center justify-center min-h-screen">
 
     <!-- common header -->
-    <section th:replace="~{navbar:: navbar}"></section>
+    <th:block th:if="${loggedInUser}">
+        <section th:replace="~{user/user_navbar:: user-navbar}"></section>
+    </th:block>
+
+    <th:block th:unless="${loggedInUser}">
+        <section th:replace="~{navbar:: navbar}"></section>
+    </th:block>
 
     <!-- Page Content -->
+    
     <div class="p-9 mt-2 h-screen w-full">
         <section th:replace="${content}"></section>
     </div>
