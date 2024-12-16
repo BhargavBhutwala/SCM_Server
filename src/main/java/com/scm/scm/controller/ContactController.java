@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,8 +17,13 @@ import com.scm.scm.entities.SocialLink;
 import com.scm.scm.entities.User;
 import com.scm.scm.forms.ContactForm;
 import com.scm.scm.helper.EmailHelper;
+import com.scm.scm.helper.Message;
+import com.scm.scm.helper.MessageType;
 import com.scm.scm.services.ContactService;
 import com.scm.scm.services.UserService;
+
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/user/contacts")
@@ -41,9 +47,22 @@ public class ContactController {
    }
 
    @PostMapping("/process-contact")
-   public String saveContact(@ModelAttribute ContactForm contactForm, Authentication authentication) {
+   public String saveContact(@Valid @ModelAttribute ContactForm contactForm, BindingResult bindingResult,
+         Authentication authentication, HttpSession session) {
 
       System.out.println(contactForm);
+
+      // validate contact form
+      if (bindingResult.hasErrors()) {
+
+         Message message = new Message();
+         message.setContent("Please correct the following errors");
+         message.setType(MessageType.red);
+
+         session.setAttribute("alert", message);
+
+         return "user/add_contact";
+      }
 
       // save contact to database
       // contactForm --> contact
@@ -77,6 +96,13 @@ public class ContactController {
 
       // save contact
       contactService.saveContact(contact);
+
+      // display contact saved message
+      Message message = new Message();
+      message.setContent("Contact saved successfully!");
+      message.setType(MessageType.green);
+
+      session.setAttribute("alert", message);
 
       return "redirect:/user/contacts/add";
    }

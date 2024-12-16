@@ -103,6 +103,6 @@ public class PageController {
         session.setAttribute("alert", message);
 
         // redirect to login page
-        return "redirect:/signup";
+        return "redirect:/login";
     }
 }

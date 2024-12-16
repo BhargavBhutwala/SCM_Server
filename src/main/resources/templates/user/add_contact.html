@@ -20,26 +20,34 @@
 
                <div class="block w-full p-6 mt-2 bg-gray-100 border border-gray-200 rounded-2xl shadow-lg dark:bg-gray-700 dark:border-gray-700 dark:hover:bg-gray-700">
 
+                  <!-- alert message -->
+                  <div th:replace="~{alert:: alert}"></div>
 
                   <h5 class="mb-2 text-2xl font-bold tracking-tight text-center text-gray-900 dark:text-white">Add New Contact</h5>
 
                   <p class="font-normal text-center text-gray-800 dark:text-gray-300">The contact will be stored on cloud</p>
 
-                  <form method="post" class="mt-6 w-full" th:action="@{/user/contacts/process-contact}" th:object="${contactForm}">
+                  <form method="post" class="mt-6 w-full" th:action="@{/user/contacts/process-contact}" th:object="${contactForm}" novalidate>
                      <!-- name input -->
                      <div class="mb-5">
                         <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
                         <input type="text" th:field="*{name}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-300 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter name" required>
+                        <!-- validation -->
+                        <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-red-600 py-2 px-1"></p>
                      </div>
                      <!-- email input -->
                      <div class="mb-5">
                         <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
                         <input type="email" th:field="*{email}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-300 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@email.com" required />
+                        <!-- validation -->
+                        <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-red-600 py-2 px-1"></p>
                      </div>
                      <!-- phone input -->
                      <div class="mb-5">
                         <label for="phoneNumber" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone Number</label>
                         <input type="tel" th:field="*{phoneNumber}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-300 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="(123)-456-7890" required>
+                        <!-- validation -->
+                        <p th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="text-red-600 py-2 px-1"></p>
                      </div>
                      <!-- address input -->
                      <div class="mb-5">
