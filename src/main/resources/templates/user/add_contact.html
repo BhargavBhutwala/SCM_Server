@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" th:replace="~{base:: parent(~{::#content}, ~{::title}, ~{})}">
+<html lang="en" th:replace="~{base:: parent(~{::#content}, ~{::title}, ~{::script})}">
 <head>
    <title>Add Contacts</title>
 </head>
@@ -27,7 +27,7 @@
 
                   <p class="font-normal text-center text-gray-800 dark:text-gray-300">The contact will be stored on cloud</p>
 
-                  <form method="post" class="mt-6 w-full" th:action="@{/user/contacts/process-contact}" th:object="${contactForm}" novalidate>
+                  <form method="post" class="mt-6 w-full" th:action="@{/user/contacts/process-contact}" th:object="${contactForm}" enctype="multipart/form-data" novalidate>
                      <!-- name input -->
                      <div class="mb-5">
                         <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
@@ -82,7 +82,9 @@
                      <!-- profile picture -->
                      <div class="mb-5">
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="picture">Upload Profile Picture</label>
-                        <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="file">
+                        <input th:field="*{picture}" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="file">
+
+                        <img class="max-h-52 rounded-lg shadow mx-auto mt-3" src="" id="upload_image_preview" alt="">
                      </div>
 
                      <!-- add to favourites -->
@@ -102,5 +104,6 @@
          </div>
       </div>
    </div>
+   <script th:src="@{/js/admin.js}"></script>
 </body>
 </html>

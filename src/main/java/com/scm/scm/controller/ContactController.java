@@ -20,6 +20,7 @@ import com.scm.scm.helper.EmailHelper;
 import com.scm.scm.helper.Message;
 import com.scm.scm.helper.MessageType;
 import com.scm.scm.services.ContactService;
+import com.scm.scm.services.ImageService;
 import com.scm.scm.services.UserService;
 
 import jakarta.servlet.http.HttpSession;
@@ -34,6 +35,9 @@ public class ContactController {
 
    @Autowired
    private UserService userService;
+
+   @Autowired
+   private ImageService imageService;
 
    // add contacts page
    @RequestMapping("/add")
@@ -55,6 +59,8 @@ public class ContactController {
       // validate contact form
       if (bindingResult.hasErrors()) {
 
+         bindingResult.getAllErrors().forEach(error -> System.out.println(error));
+
          Message message = new Message();
          message.setContent("Please correct the following errors");
          message.setType(MessageType.red);
@@ -63,6 +69,16 @@ public class ContactController {
 
          return "user/add_contact";
       }
+
+      // get user information and save it
+      String email = EmailHelper.getEmailOfLoggedInUser(authentication);
+      User user = userService.getUserByEmail(email);
+
+      // process image
+      // System.out.println("File information: " +
+      // contactForm.getPicture().getOriginalFilename());
+      // image upload
+      String fileURL = imageService.uploadImage(contactForm.getPicture());
 
       // save contact to database
       // contactForm --> contact
@@ -74,6 +90,7 @@ public class ContactController {
       contact.setAddress(contactForm.getAddress());
       contact.setDescription(contactForm.getDescription());
       contact.setFavorite(contactForm.isFavorite());
+      contact.setPicture(fileURL);
 
       List<SocialLink> socialLinks = contactForm.getSocialLinks()
             .stream().map(link -> {
@@ -88,14 +105,11 @@ public class ContactController {
 
       contact.setSocialLinks(socialLinks);
 
-      // get user information and save it
-      String email = EmailHelper.getEmailOfLoggedInUser(authentication);
-      User user = userService.getUserByEmail(email);
-
       contact.setUser(user);
 
       // save contact
       contactService.saveContact(contact);
+      // System.out.println(contact);
 
       // display contact saved message
       Message message = new Message();

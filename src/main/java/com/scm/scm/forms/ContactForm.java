@@ -37,6 +37,8 @@ public class ContactForm {
 
    private String address;
 
+   // will create a custom validator using annotations
+   // and validate size and resolution
    private MultipartFile picture;
 
    private String description;
