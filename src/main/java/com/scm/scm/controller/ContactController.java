@@ -120,4 +120,21 @@ public class ContactController {
 
       return "redirect:/user/contacts/add";
    }
+
+   // view all contacts
+   @RequestMapping("/")
+   public String viewContacts(Model model, Authentication authentication) {
+
+      // load all contacts of the user
+
+      String email = EmailHelper.getEmailOfLoggedInUser(authentication);
+
+      User user = userService.getUserByEmail(email);
+
+      List<Contact> contacts = contactService.getContactsByUserId(user.getUserId());
+
+      model.addAttribute("contacts", contacts);
+
+      return "user/contacts";
+   }
 }
