@@ -5,6 +5,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.scm.scm.entities.Contact;
@@ -71,12 +74,23 @@ public class ContactServiceImpl implements ContactService {
    }
 
    @Override
-   public List<Contact> getContactsByUserId(String userId) {
+   public Page<Contact> getContactsByUserId(String userId, int page, int size, String sortBy, String direction) {
+
+      Sort sort = direction.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
 
       User user = userService.getUserById(userId)
-            .orElseThrow(() -> new ResourceNotFoundException("No user with id " + userId));
+            .orElseThrow(() -> new ResourceNotFoundException("No user with id " +
+                  userId));
 
-      return contactRepository.findByUser(user);
+      return contactRepository.findByUser(user, PageRequest.of(page, size, sort));
+   }
+
+   @Override
+   public Page<Contact> getContactsByUser(User user, int page, int size, String sortBy, String direction) {
+
+      Sort sort = direction.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+
+      return contactRepository.findByUser(user, PageRequest.of(page, size, sort));
    }
 
 }

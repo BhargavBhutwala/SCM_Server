@@ -3,7 +3,10 @@ package com.scm.scm.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+
 import com.scm.scm.entities.Contact;
+import com.scm.scm.entities.User;
 
 public interface ContactService {
 
@@ -17,6 +20,8 @@ public interface ContactService {
 
    public List<Contact> getAllContacts();
 
-   public List<Contact> getContactsByUserId(String userId);
+   public Page<Contact> getContactsByUserId(String userId, int page, int size, String sortBy, String direction);
+
+   public Page<Contact> getContactsByUser(User user, int page, int size, String sortBy, String direction);
 
 }
