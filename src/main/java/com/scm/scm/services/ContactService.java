@@ -24,4 +24,11 @@ public interface ContactService {
 
    public Page<Contact> getContactsByUser(User user, int page, int size, String sortBy, String direction);
 
+   public Page<Contact> searchByName(User user, String name, int page, int size, String sortBy, String direction);
+
+   public Page<Contact> searchByEmail(User user, String email, int page, int size, String sortBy, String direction);
+
+   public Page<Contact> searchByPhoneNumber(User user, String phoneNumber, int page, int size, String sortBy,
+         String direction);
+
 }

@@ -93,4 +93,27 @@ public class ContactServiceImpl implements ContactService {
       return contactRepository.findByUser(user, PageRequest.of(page, size, sort));
    }
 
+   @Override
+   public Page<Contact> searchByName(User user, String name, int page, int size, String sortBy, String direction) {
+
+      Sort sort = direction.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+
+      return contactRepository.findByUserAndNameContaining(user, name, PageRequest.of(page, size, sort));
+   }
+
+   @Override
+   public Page<Contact> searchByEmail(User user, String email, int page, int size, String sortBy, String direction) {
+      Sort sort = direction.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+
+      return contactRepository.findByUserAndEmailContaining(user, email, PageRequest.of(page, size, sort));
+   }
+
+   @Override
+   public Page<Contact> searchByPhoneNumber(User user, String phoneNumber, int page, int size, String sortBy,
+         String direction) {
+      Sort sort = direction.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+
+      return contactRepository.findByUserAndPhoneNumberContaining(user, phoneNumber, PageRequest.of(page, size, sort));
+   }
+
 }

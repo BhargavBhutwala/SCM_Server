@@ -18,6 +18,7 @@ import com.scm.scm.entities.Contact;
 import com.scm.scm.entities.SocialLink;
 import com.scm.scm.entities.User;
 import com.scm.scm.forms.ContactForm;
+import com.scm.scm.forms.ContactSearchForm;
 import com.scm.scm.helper.AppConstants;
 import com.scm.scm.helper.EmailHelper;
 import com.scm.scm.helper.Message;
@@ -142,7 +143,42 @@ public class ContactController {
 
       model.addAttribute("pageContacts", pageContacts);
       model.addAttribute("pageSize", AppConstants.PAGE_SIZE);
+      model.addAttribute("contactSearchForm", new ContactSearchForm());
 
       return "user/contacts";
+   }
+
+   // contacts search handler
+   @RequestMapping("/search")
+   public String searchHandler(@ModelAttribute ContactSearchForm contactSearchForm,
+         @RequestParam(value = "page", defaultValue = "0") int page,
+         @RequestParam(value = "size", defaultValue = AppConstants.PAGE_SIZE + "") int size,
+         @RequestParam(value = "sortBy", defaultValue = "name") String sortBy,
+         @RequestParam(value = "direction", defaultValue = "asc") String direction,
+         Model model, Authentication authentication) {
+
+      // System.out.println("field: " + field + " keyword: " + keyword);
+
+      String email = EmailHelper.getEmailOfLoggedInUser(authentication);
+
+      User user = userService.getUserByEmail(email);
+
+      Page<Contact> pageContacts = null;
+
+      if (contactSearchForm.getField().equalsIgnoreCase("name")) {
+         pageContacts = contactService.searchByName(user, contactSearchForm.getKeyword(), page, size, sortBy,
+               direction);
+      } else if (contactSearchForm.getField().equalsIgnoreCase("email")) {
+         pageContacts = contactService.searchByEmail(user, contactSearchForm.getKeyword(), page, size, sortBy,
+               direction);
+      } else if (contactSearchForm.getField().equalsIgnoreCase("phoneNumber")) {
+         pageContacts = contactService.searchByPhoneNumber(user, contactSearchForm.getKeyword(), page, size, sortBy,
+               direction);
+      }
+
+      model.addAttribute("pageContacts", pageContacts);
+      model.addAttribute("pageSize", AppConstants.PAGE_SIZE);
+
+      return "user/search";
    }
 }
