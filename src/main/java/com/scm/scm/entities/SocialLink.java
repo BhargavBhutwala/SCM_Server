@@ -1,5 +1,7 @@
 package com.scm.scm.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,6 +30,7 @@ public class SocialLink {
    private String link;
 
    @ManyToOne
+   @JsonBackReference
    private Contact contact;
 
 }
