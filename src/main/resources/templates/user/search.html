@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" th:replace="~{base:: parent(~{::#content}, ~{::title}, ~{})}">
+<html lang="en" th:replace="~{base:: parent(~{::#content}, ~{::title}, ~{::script})}">
 <head>
    <title>Search Results</title>
 </head>
@@ -13,9 +13,12 @@
 
       <!-- page content -->
       <div class="sm:pl-64 lg:pt-3 pt-9 sm:pt-16 justify-center flex flex-col items-center">
+
          <h1 class="font-bold text-2xl">Search Results</h1>
          <p th:text="${pageContacts.totalElements} + ' results found'"></p>
 
+         <!-- alert message -->
+         <div th:replace="~{alert:: alert}"></div>
 
          <!-- table -->
          <div class="contact_container p-6 mt-3 w-full">
@@ -90,9 +93,11 @@
                               </div>
                            </td>
                            <td class="px-6 py-4">
-                              <i class="fa-solid fa-trash w-6 h-6"></i>
-                              <i class="fa-solid fa-pen w-6 h-6"></i>
-                              <i class="fa-solid fa-eye w-6 h-6"></i>
+                              <div>
+                                 <button th:onclick="deleteContact([[${contact.id}]])"><i class="fa-solid fa-trash w-6 h-6"></i></button>
+                                 <i class="fa-solid fa-pen w-6 h-6"></i>
+                                 <button th:onclick="loadContactData([[${contact.id}]])"><i class="fa-solid fa-eye w-6 h-6"></i></button>
+                              </div>
                            </td>
                      </tr>
                   </tbody>
@@ -131,8 +136,11 @@
 
          </div>
 
+         <div th:replace="~{user/contact_modal:: contact}"></div>
+
       </div>
 
    </div>
+   <script th:src="@{/js/contact.js}"></script>
 </body>
 </html>

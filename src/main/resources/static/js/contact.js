@@ -1,3 +1,5 @@
+const baseUrl = 'http://localhost:8080';
+
 // set the modal menu element
 const viewContactModal = document.getElementById('view_contact_modal');
 
@@ -38,7 +40,7 @@ function closeContactModal() {
 function loadContactData(id) {
   //   console.log(id);
   // fetch contact data from server using id
-  fetch(`http://localhost:8080/user/contacts/view/${id}`)
+  fetch(`${baseUrl}/user/contacts/view/${id}`)
     .then(async (response) => {
       let data = await response.json();
       console.log(data);
@@ -48,6 +50,14 @@ function loadContactData(id) {
       document.getElementById('contact_address').innerHTML = data.address;
       document.getElementById('contact_description').innerHTML =
         data.description;
+      document.getElementById('contact_website').href =
+        data.socialLinks[0].link;
+      document.getElementById('contact_website').innerHTML =
+        data.socialLinks[0].link;
+      document.getElementById('contact_linkedIn').href =
+        data.socialLinks[1].link;
+      document.getElementById('contact_linkedIn').innerHTML =
+        data.socialLinks[1].link;
 
       const contactPicture = document.getElementById('contact_picture');
       contactPicture.src = data.picture
@@ -67,4 +77,25 @@ function loadContactData(id) {
     .catch((error) => {
       console.error('Error:', error);
     });
+}
+
+function deleteContact(id) {
+  // Swal.fire('SweetAlert2 is working!' + id);
+  Swal.fire({
+    icon: 'warning',
+    title: 'Do you want to delete the contact?',
+    showCancelButton: true,
+    confirmButtonText: 'Yes',
+    cancelButtonText: 'No',
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonTextColor: '#3085d6',
+    cancelButtonTextColor: '#d33',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Swal.fire('Saved!', '', 'success');
+      const url = `${baseUrl}/user/contacts/delete/` + id;
+      window.location.replace(url);
+    }
+  });
 }

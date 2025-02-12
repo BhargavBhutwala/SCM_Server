@@ -190,4 +190,18 @@ public class ContactController {
 
       return contactService.getContactById(contactId).get();
    }
+
+   @RequestMapping("/delete/{contactId}")
+   public String deleteContact(@PathVariable("contactId") String contactId, HttpSession session) {
+
+      contactService.deleteContact(contactId);
+
+      Message message = new Message();
+      message.setContent("Contact deleted successfully!");
+      message.setType(MessageType.green);
+
+      session.setAttribute("alert", message);
+
+      return "redirect:/user/contacts/";
+   }
 }
