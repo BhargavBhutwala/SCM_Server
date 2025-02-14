@@ -204,4 +204,80 @@ public class ContactController {
 
       return "redirect:/user/contacts/";
    }
+
+   @RequestMapping("/update/{contactId}")
+   public String updateContact(@PathVariable("contactId") String contactId, Model model) {
+
+      Contact contact = contactService.getContactById(contactId).get();
+
+      ContactForm contactForm = new ContactForm();
+      contactForm.setName(contact.getName());
+      contactForm.setEmail(contact.getEmail());
+      contactForm.setPhoneNumber(contact.getPhoneNumber());
+      contactForm.setAddress(contact.getAddress());
+      contactForm.setDescription(contact.getDescription());
+      contactForm.setFavorite(contact.isFavorite());
+      contactForm.setSocialLinks(contact.getSocialLinks());
+      contactForm.setContactImage(contact.getPicture());
+
+      model.addAttribute("contactForm", contactForm);
+      model.addAttribute("contactId", contactId);
+
+      return "user/update_contact";
+   }
+
+   @PostMapping("/process-update/{contactId}")
+   public String processUpdateContact(@PathVariable("contactId") String contactId,
+         @Valid @ModelAttribute ContactForm contactForm, BindingResult bindingResult, HttpSession session) {
+
+      if (bindingResult.hasErrors()) {
+         return "user/update_contact";
+      }
+
+      Contact contact = contactService.getContactById(contactId).get();
+      contact.setName(contactForm.getName());
+      contact.setEmail(contactForm.getEmail());
+      contact.setPhoneNumber(contactForm.getPhoneNumber());
+      contact.setAddress(contactForm.getAddress());
+      contact.setDescription(contactForm.getDescription());
+      contact.setFavorite(contactForm.isFavorite());
+
+      contact.getSocialLinks().clear();
+      List<SocialLink> socialLinks = contactForm.getSocialLinks().stream().map(link -> {
+         SocialLink socialLink = new SocialLink();
+         socialLink.setLink(link.getLink());
+         // socialLink.setContact(contact);
+         return socialLink;
+      }).collect(Collectors.toList());
+
+      if (!socialLinks.isEmpty()) {
+         socialLinks.get(0).setTitle("Website");
+      }
+      if (socialLinks.size() > 1) {
+         socialLinks.get(1).setTitle("LinkedIn");
+      }
+
+      for (SocialLink s : socialLinks) {
+         s.setContact(contact);
+         contact.getSocialLinks().add(s);
+      }
+
+      // contact.setPicture(contactForm.getContactImage());
+      // String fileURL = imageService.uploadImage(contactForm.getPicture());
+      // contact.setPicture(fileURL);
+      if (contactForm.getPicture() != null && !contactForm.getPicture().isEmpty()) {
+         String fileURL = imageService.uploadImage(contactForm.getPicture());
+         contact.setPicture(fileURL);
+      }
+
+      contactService.updateContact(contact);
+
+      Message message = new Message();
+      message.setContent("Contact updated successfully!");
+      message.setType(MessageType.green);
+
+      session.setAttribute("alert", message);
+
+      return "redirect:/user/contacts/";
+   }
 }

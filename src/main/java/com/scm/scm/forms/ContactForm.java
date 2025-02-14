@@ -41,6 +41,8 @@ public class ContactForm {
    // and validate size and resolution
    private MultipartFile picture;
 
+   private String contactImage;
+
    private String description;
 
    private boolean favorite;
