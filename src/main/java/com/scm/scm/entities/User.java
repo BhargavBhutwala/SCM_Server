@@ -52,11 +52,13 @@ public class User implements UserDetails {
   private String profilePic;
 
   // information
-  private boolean enabled = true;
+  private boolean enabled = false;
 
   private boolean emailVerified = false;
 
   private boolean phoneNumberVerified = false;
+
+  private String emailToken;
 
   // signup information (self, google, github)
   @Enumerated(value = EnumType.STRING)
@@ -88,6 +90,11 @@ public class User implements UserDetails {
   @Override
   public String getUsername() {
     return this.email;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return this.enabled;
   }
 
 }

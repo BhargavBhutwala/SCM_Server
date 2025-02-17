@@ -80,12 +80,6 @@ public class ContactController {
       String email = EmailHelper.getEmailOfLoggedInUser(authentication);
       User user = userService.getUserByEmail(email);
 
-      // process image
-      // System.out.println("File information: " +
-      // contactForm.getPicture().getOriginalFilename());
-      // image upload
-      String fileURL = imageService.uploadImage(contactForm.getPicture());
-
       // save contact to database
       // contactForm --> contact
 
@@ -96,7 +90,15 @@ public class ContactController {
       contact.setAddress(contactForm.getAddress());
       contact.setDescription(contactForm.getDescription());
       contact.setFavorite(contactForm.isFavorite());
-      contact.setPicture(fileURL);
+
+      // process image
+      // System.out.println("File information: " +
+      // contactForm.getPicture().getOriginalFilename());
+      // image upload
+      if (contactForm.getPicture() != null && !contactForm.getPicture().isEmpty()) {
+         String fileURL = imageService.uploadImage(contactForm.getPicture());
+         contact.setPicture(fileURL);
+      }
 
       List<SocialLink> socialLinks = contactForm.getSocialLinks()
             .stream().map(link -> {

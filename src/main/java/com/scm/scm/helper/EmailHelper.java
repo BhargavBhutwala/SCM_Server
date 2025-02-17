@@ -38,4 +38,9 @@ public class EmailHelper {
          return authentication.getName(); // if not using OAuth, return username
       }
    }
+
+   public static String getEmailVerificationLink(String emailToken) {
+
+      return "http://localhost:8080/auth/verify-email?token=" + emailToken;
+   }
 }

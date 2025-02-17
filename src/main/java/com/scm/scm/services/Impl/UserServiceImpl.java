@@ -4,16 +4,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.scm.scm.entities.User;
 import com.scm.scm.helper.AppConstants;
+import com.scm.scm.helper.EmailHelper;
 import com.scm.scm.helper.ResourceNotFoundException;
 import com.scm.scm.repositories.UserRepository;
+import com.scm.scm.services.EmailService;
 import com.scm.scm.services.UserService;
 
 @Service
@@ -25,7 +25,10 @@ public class UserServiceImpl implements UserService {
    @Autowired
    private PasswordEncoder passwordEncoder;
 
-   private Logger logger = LoggerFactory.getLogger(this.getClass());
+   @Autowired
+   private EmailService emailService;
+
+   // private Logger logger = LoggerFactory.getLogger(this.getClass());
 
    @Override
    public User saveUser(User user) {
@@ -40,7 +43,20 @@ public class UserServiceImpl implements UserService {
       // set role
       user.setRoleList(List.of(AppConstants.ROLE_USER));
 
-      return userRepository.save(user);
+      // set email verification token
+      String token = UUID.randomUUID().toString();
+
+      user.setEmailToken(token);
+
+      User savedUser = userRepository.save(user);
+
+      // send email verification link
+      String link = EmailHelper.getEmailVerificationLink(token);
+
+      emailService.sendEmail(savedUser.getEmail(), "Account Verification: Smart Contact Manager", link);
+
+      return savedUser;
+
    }
 
    @Override
@@ -66,6 +82,7 @@ public class UserServiceImpl implements UserService {
       user2.setPhoneNumberVerified(user.isPhoneNumberVerified());
       user2.setProvider(user.getProvider());
       user2.setProviderId(user.getProviderId());
+      user2.setEmailToken(user.getEmailToken());
 
       // save the user
       return userRepository.save(user2);
@@ -100,6 +117,12 @@ public class UserServiceImpl implements UserService {
    @Override
    public User getUserByEmail(String email) {
       return userRepository.findByEmail(email).orElse(null);
+   }
+
+   @Override
+   public User getUserByEmailToken(String token) {
+
+      return userRepository.findByEmailToken(token);
    }
 
 }

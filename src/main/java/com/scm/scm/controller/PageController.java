@@ -97,7 +97,8 @@ public class PageController {
         System.out.println("user saved successfully");
 
         Message message = new Message();
-        message.setContent("Registration successful!");
+        message.setContent(
+                "Registration successful! Verify your email, verification link has been sent to your email address");
         message.setType(MessageType.green);
 
         session.setAttribute("alert", message);
